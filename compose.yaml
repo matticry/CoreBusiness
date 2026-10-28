@@ -1,16 +1,25 @@
 services:
   postgres:
-    image: 'postgres:latest'
+    image: 'postgres:16-alpine'
+    container_name: corebusiness_postgres
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_DB=db_math'
+      - 'POSTGRES_USER=postgres'
+      - 'POSTGRES_PASSWORD=admin'
     ports:
-      - '5432'
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   rabbitmq:
-    image: 'rabbitmq:latest'
+    image: 'rabbitmq:3-management-alpine'
+    container_name: corebusiness_rabbitmq
     environment:
-      - 'RABBITMQ_DEFAULT_PASS=secret'
       - 'RABBITMQ_DEFAULT_USER=myuser'
+      - 'RABBITMQ_DEFAULT_PASS=secret'
     ports:
-      - '5672'
+      - '5672:5672'
+      - '15672:15672'
+
+volumes:
+  postgres_data:

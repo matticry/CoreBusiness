@@ -1,6 +1,6 @@
 package com.matticry.corebusiness.infrastructure.adapter.security;
 
-import com.matticry.corebusiness.domain.port.out.PasswordEncoderPort;
+import com.matticry.corebusiness.domain.port.out.user.PasswordEncoderPort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

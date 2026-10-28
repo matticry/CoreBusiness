@@ -5,7 +5,7 @@ description: Implementar autenticación JWT segura en APIs y microservicios Spri
 
 # Spring Boot JWT: implementación segura
 
-Objetivo: que Claude implemente (o revise) JWT en Spring Boot sin errores de seguridad típicos, usando lo que Spring Security ya trae en vez de código criptográfico propio.
+Objetivo: que el agente implemente (o revise) JWT en Spring Boot sin errores de seguridad típicos, usando lo que Spring Security ya trae en vez de código criptográfico propio.
 
 ## Paso 1: decidir la arquitectura (preguntar solo lo que no se pueda inferir)
 
@@ -19,16 +19,18 @@ Objetivo: que Claude implemente (o revise) JWT en Spring Boot sin errores de seg
 
 ## Paso 2: implementar
 
-Leer `references/resource-server.md` y adaptar al paquete/proyecto del usuario. Contiene:
-- dependencias Maven
-- `JwtProperties`, `JwtConfig` (encoder, decoder con validación de issuer + audience)
-- `TokenService` (emisión de access token)
-- `SecurityConfig` (stateless, handlers 401/403 con `ProblemDetail`)
-- conversión de roles a authorities
+Leer el `pom.xml` para detectar la versión de Spring Boot: Boot 3.x = Security 6; Boot 4.x = Security 7. Los starters pueden cambiar de nombre en Boot 4, así que verificar contra la documentación oficial si la dependencia no resuelve.
 
-Si hay login con refresh tokens (casi siempre), leer también `references/refresh-tokens.md` (rotación, detección de reuso, migración Flyway).
+Implementar, en el paquete de infraestructura/seguridad del proyecto:
 
-Detectar la versión de Spring Boot del `pom.xml` antes de escribir código: Boot 3.x = Security 6; Boot 4.x = Security 7. Los starters pueden cambiar de nombre en Boot 4, así que verificar contra la documentación oficial si la dependencia no resuelve.
+- Dependencias Maven de Spring Security y OAuth2 Resource Server.
+- `JwtProperties` con `@ConfigurationProperties`: issuer, audience, algoritmo y clave(s).
+- `JwtConfig`: `NimbusJwtEncoder` y `NimbusJwtDecoder` (o `JwtDecoders.fromIssuerLocation`) con validación de issuer y audience.
+- `TokenService`: emisión de access tokens con `jti`, `iat`, `sub`, `exp` y claims mínimos.
+- `SecurityConfig`: `SecurityFilterChain` stateless, rutas públicas explícitas y handlers 401/403 serializados con `ObjectMapper` usando el envelope de errores del proyecto (`ApiResponse` en CoreBusiness).
+- Conversión de roles a authorities desde el claim correspondiente.
+
+Si hay login con refresh tokens (casi siempre), implementar rotación, detección de reuso, almacenamiento hasheado y la migración Flyway correspondiente.
 
 ## Paso 3: reglas obligatorias (checklist)
 
@@ -50,7 +52,7 @@ Detectar la versión de Spring Boot del `pom.xml` antes de escribir código: Boo
 - Incluir `/error` en `permitAll` (si no, los 404/500 se convierten en 401).
 - Swagger/OpenAPI público solo en perfil `dev`.
 - `BCryptPasswordEncoder` (strength 10 a 12) o `DelegatingPasswordEncoder`/Argon2.
-- Respuestas 401/403 con `WWW-Authenticate: Bearer` y `ProblemDetail`, serializadas con `ObjectMapper`, no JSON escrito a mano.
+- Respuestas 401/403 con `WWW-Authenticate: Bearer` y el envelope de errores del proyecto (`ApiResponse` en CoreBusiness, `ProblemDetail` en otros proyectos), serializadas con `ObjectMapper`, no JSON escrito a mano.
 - Mismo mensaje de error para "usuario no existe" y "contraseña incorrecta".
 
 **Operación**

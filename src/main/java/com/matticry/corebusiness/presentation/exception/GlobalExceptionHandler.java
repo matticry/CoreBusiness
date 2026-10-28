@@ -1,7 +1,9 @@
 package com.matticry.corebusiness.presentation.exception;
 
-import com.matticry.corebusiness.domain.exception.UserAlreadyExistsException;
-import com.matticry.corebusiness.domain.exception.UserNotFoundException;
+import com.matticry.corebusiness.domain.exception.auth.InvalidCredentialsException;
+import com.matticry.corebusiness.domain.exception.auth.InvalidTokenException;
+import com.matticry.corebusiness.domain.exception.user.UserAlreadyExistsException;
+import com.matticry.corebusiness.domain.exception.user.UserNotFoundException;
 import com.matticry.corebusiness.presentation.dto.ApiResponse;
 import com.matticry.corebusiness.presentation.dto.ApiResponseFactory;
 import jakarta.validation.ConstraintViolationException;
@@ -32,6 +34,16 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     private final ApiResponseFactory apiResponseFactory;
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidCredentials(InvalidCredentialsException ex) {
+        return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), null);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInvalidToken(InvalidTokenException ex) {
+        return build(HttpStatus.UNAUTHORIZED, ex.getMessage(), null);
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleUserNotFoundException(UserNotFoundException ex) {

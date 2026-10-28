@@ -1,8 +1,7 @@
-package com.matticry.corebusiness.domain.port.out;
+package com.matticry.corebusiness.domain.port.out.user;
 
 /**
  * Puerto de salida para el hasheo y verificación de contraseñas.
- * Permite mantener el dominio desacoplado de la librería criptográfica.
  */
 public interface PasswordEncoderPort {
 

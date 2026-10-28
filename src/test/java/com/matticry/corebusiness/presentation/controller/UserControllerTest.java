@@ -1,11 +1,11 @@
 package com.matticry.corebusiness.presentation.controller;
 
-import com.matticry.corebusiness.domain.model.User;
-import com.matticry.corebusiness.domain.port.in.CreateUserUseCase;
-import com.matticry.corebusiness.domain.port.in.DeleteUserUseCase;
-import com.matticry.corebusiness.domain.port.in.GetAllUsersUseCase;
-import com.matticry.corebusiness.domain.port.in.GetUserByIdUseCase;
-import com.matticry.corebusiness.domain.port.in.UpdateUserUseCase;
+import com.matticry.corebusiness.domain.model.user.User;
+import com.matticry.corebusiness.domain.port.in.user.CreateUserUseCase;
+import com.matticry.corebusiness.domain.port.in.user.DeleteUserUseCase;
+import com.matticry.corebusiness.domain.port.in.user.GetAllUsersUseCase;
+import com.matticry.corebusiness.domain.port.in.user.GetUserByIdUseCase;
+import com.matticry.corebusiness.domain.port.in.user.UpdateUserUseCase;
 import com.matticry.corebusiness.presentation.dto.ApiResponseFactory;
 import com.matticry.corebusiness.presentation.dto.CreateUserRequestDto;
 import com.matticry.corebusiness.presentation.dto.UserResponseDto;
@@ -13,6 +13,7 @@ import com.matticry.corebusiness.presentation.mapper.UserRestMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 @Import(ApiResponseFactory.class)
 class UserControllerTest {
 

@@ -1,10 +1,10 @@
 package com.matticry.corebusiness.presentation.controller;
 
-import com.matticry.corebusiness.domain.port.in.CreateUserUseCase;
-import com.matticry.corebusiness.domain.port.in.DeleteUserUseCase;
-import com.matticry.corebusiness.domain.port.in.GetAllUsersUseCase;
-import com.matticry.corebusiness.domain.port.in.GetUserByIdUseCase;
-import com.matticry.corebusiness.domain.port.in.UpdateUserUseCase;
+import com.matticry.corebusiness.domain.port.in.user.CreateUserUseCase;
+import com.matticry.corebusiness.domain.port.in.user.DeleteUserUseCase;
+import com.matticry.corebusiness.domain.port.in.user.GetAllUsersUseCase;
+import com.matticry.corebusiness.domain.port.in.user.GetUserByIdUseCase;
+import com.matticry.corebusiness.domain.port.in.user.UpdateUserUseCase;
 import com.matticry.corebusiness.presentation.dto.ApiResponse;
 import com.matticry.corebusiness.presentation.dto.ApiResponseFactory;
 import com.matticry.corebusiness.presentation.dto.CreateUserRequestDto;
@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Tag(name = "Users", description = "Endpoints de gestión y administración de usuarios")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     private final CreateUserUseCase createUserUseCase;

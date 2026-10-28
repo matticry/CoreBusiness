@@ -1,8 +1,8 @@
 package com.matticry.corebusiness.presentation.mapper;
 
-import com.matticry.corebusiness.application.dto.CreateUserCommand;
-import com.matticry.corebusiness.application.dto.UpdateUserCommand;
-import com.matticry.corebusiness.domain.model.User;
+import com.matticry.corebusiness.application.dto.user.CreateUserCommand;
+import com.matticry.corebusiness.application.dto.user.UpdateUserCommand;
+import com.matticry.corebusiness.domain.model.user.User;
 import com.matticry.corebusiness.presentation.dto.CreateUserRequestDto;
 import com.matticry.corebusiness.presentation.dto.UpdateUserRequestDto;
 import com.matticry.corebusiness.presentation.dto.UserResponseDto;

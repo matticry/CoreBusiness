@@ -22,8 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      checks: write          # publicar resultados de tests
-      pull-requests: write   # comentar cobertura en PRs
+      checks: write            # publicar resultados de tests
+      pull-requests: write     # comentar cobertura en PRs
+      dependency-graph: write  # actualizar grafo de dependencias (Dependabot)
 
     steps:
       # ── Checkout ──────────────────────────────────────────────

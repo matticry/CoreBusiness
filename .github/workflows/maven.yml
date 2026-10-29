@@ -86,13 +86,34 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      # ── Actualizar grafo de dependencias (Dependabot) ─────────
-      - name: Actualizar grafo de dependencias
+  # ──────────────────────────────────────────────────────────────────
+  # JOB 2 · Dependency Graph — Enviar snapshot de dependencias Maven
+  # Solo en push a main. Corre en paralelo con ci (no bloquea el deploy).
+  # Requiere contents: write, por eso va aislado del job de CI.
+  # ──────────────────────────────────────────────────────────────────
+  dependency-submission:
+    name: Update Dependency Graph
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: write          # requerido por la API de dependency submission
+
+    steps:
+      - name: Checkout código fuente
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: maven
+
+      - name: Enviar grafo de dependencias
         uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
   # ──────────────────────────────────────────────────────────────────
-  # JOB 2 · Docker — Construir y publicar imagen en GHCR
+  # JOB 3 · Docker — Construir y publicar imagen en GHCR
   # Solo en push a main (no en PRs)
   # ──────────────────────────────────────────────────────────────────
   docker:
@@ -150,7 +171,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   # ──────────────────────────────────────────────────────────────────
-  # JOB 3 · CD — Deploy a producción (Railway / Render / VPS)
+  # JOB 4 · CD — Deploy a producción (VPS via SSH)
   # Se activa solo en push a main, después de que la imagen esté lista
   # ──────────────────────────────────────────────────────────────────
   deploy:
@@ -183,8 +204,12 @@ jobs:
           script: |
             set -e
 
+            # Docker exige nombres de imagen en minúsculas
+            IMAGE="ghcr.io/${{ github.repository }}"
+            IMAGE="${IMAGE,,}"
+
             echo "📦 Pulling imagen más reciente..."
-            docker pull ghcr.io/${{ github.repository }}:latest
+            docker pull "$IMAGE:latest"
 
             echo "🔄 Reiniciando servicio..."
             cd /opt/corebusiness
